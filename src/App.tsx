@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Login from "./Components/Login.jsx";
 import Register from "./Components/Register.jsx";
 import Dashboard from "./Components/Dashboard.jsx";
@@ -8,12 +8,28 @@ import Analytics from "./Components/Analytics.jsx";
 import Profile from "./Components/Profile.jsx";
 import "./App.css";
 
+// Define User type
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+type Page =
+  | "login"
+  | "register"
+  | "dashboard"
+  | "management"
+  | "collaboration"
+  | "analytics"
+  | "profile";
+
 function App() {
-  const [currentPage, setCurrentPage] = useState("login"); // login, register, dashboard, management, collaboration, analytics, profile
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState<Page>("login");
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
   // When login is successful
-  const handleLoginSuccess = (userData) => {
+  const handleLoginSuccess = (userData: User) => {
     setLoggedInUser(userData);
     setCurrentPage("dashboard");
   };
@@ -30,55 +46,43 @@ function App() {
     setCurrentPage("login");
   };
 
-  // **Go to any page from Dashboard**
-  const goToPage = (pageName) => {
+  // Go to any page from Dashboard
+  const goToPage = (pageName: Page) => {
     setCurrentPage(pageName);
   };
 
   return (
     <>
-      {/* Login Page */}
       {currentPage === "login" && (
-        <Login 
+        <Login
           onRegisterClick={showRegister}
           onLoginSuccess={handleLoginSuccess}
         />
       )}
 
-      {/* Register Page */}
-      {currentPage === "register" && (
-        <Register onRegisterClick={showLogin} />
-      )}
+      {currentPage === "register" && <Register onRegisterClick={showLogin} />}
 
-      {/* Dashboard Page */}
-      {currentPage === "dashboard" && (
-        <Dashboard 
+      {currentPage === "dashboard" && loggedInUser && (
+        <Dashboard
           user={loggedInUser}
           onLogout={handleLogout}
           goToManagement={() => setCurrentPage("management")}
-          goToPage={goToPage} // pass this so Dashboard buttons work
+          goToPage={goToPage}
         />
       )}
 
-      {/* Project Management Page */}
-      {currentPage === "management" && (
-        <Management 
-          user={loggedInUser}
-          onBack={() => setCurrentPage("dashboard")}
-        />
+      {currentPage === "management" && loggedInUser && (
+        <Management user={loggedInUser} onBack={() => setCurrentPage("dashboard")} />
       )}
 
-      {/* Collaboration / Invitations Page */}
       {currentPage === "collaboration" && (
         <Collaboration onBack={() => setCurrentPage("dashboard")} />
       )}
 
-      {/* Analytics / Reports Page */}
       {currentPage === "analytics" && (
         <Analytics onBack={() => setCurrentPage("dashboard")} />
       )}
 
-      {/* Profile / Settings Page */}
       {currentPage === "profile" && (
         <Profile onBack={() => setCurrentPage("dashboard")} />
       )}
