@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: collab-project-backend
+    rootDir: src/backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
